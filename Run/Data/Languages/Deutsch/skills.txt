@@ -134,6 +134,7 @@ Explosionsbeschicht.
 Glückserhöher
 Zerlegemeister
 Element-Luftherrschaft
+Igni Intensität
 Anjanath-Macht
 Legiana-Segen
 Odogaron-Macht
@@ -159,4 +160,5 @@ Gildenführung
 Kommissionsführung
 Lunastra-Vorteil
 Dragoon-Kristall
-Astera Blessing
+Astera-Segen
+Hexerwissen

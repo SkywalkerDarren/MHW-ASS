@@ -1,0 +1,560 @@
+Moneda del rey cazador
+Píldora armadura
+Semilla armadura
+Esfera de armadura avanzada
+Fragmento de eterita
+Hueso antiguo
+Hueso maldito de antiguo
+Garra de leshen antiguo
+Cráneo de leshen antiguo
+Poción antigua
+Colmillo de Anjanath
+Colmillo de Anjanath+
+Gema de Anjanath
+Hueso nasal de Anjanath
+Hueso nasal de Anjanath+
+Piel de Anjanath
+Piel de Anjanath+
+Placa de Anjanath
+Escama de Anjanath
+Escama de Anjanath+
+Cola de Anjanath
+Antídoto
+Hierba antídoto
+Vale de gratitud
+Vesícula acuosa
+Oceanita
+Esfera de armadura
+Esfera de armadura+
+Amuleto de armadura
+Piel de armadura
+Garra de armadura
+Cebo de arrowana
+Cecina de Astera
+Vale de cosecha de otoño
+Coraza de Rathalos Celeste
+Escama de Rathalos Celeste+
+Cola de Rathalos Celeste
+Ala de Rathalos Celeste
+Fragmento de estrella celeste
+Gema estrella celeste
+Insecto goloso
+Piel de Barnos+
+Garra de Barnos
+Bomba de barril
+Coraza de Barroth
+Garra de Barroth
+Garra de Barroth+
+Moneda Barroth
+Cresta de Barroth
+Cresta de Barroth+
+Cuero cabelludo de Barroth
+Caparazón de Barroth
+Cola de Barroth
+Coraza de Bazelgeuse
+Espoleta de Bazelgeuse
+Gema de Bazelgeuse
+Escama de Bazelgeuse+
+Cola de Bazelgeuse
+Garra de Bazelgeuse
+Ala de Bazelgeuse
+Escama bonita
+Hueso de Bégimo
+Gran cuerno de Bégimo
+Crin de Bégimo
+Garra guadaña de Bégimo
+Cola de Bégimo
+Piedra Bherna
+Prismáticos
+Gema Wyvern pájaro
+Bicho amargo
+Vendaje negro
+Vale cristal negro
+Coraza de Diablos Negra
+Cresta de Diablos Negra+
+Colmillo negro en espiral+
+Nuez pegajosa
+Ardenuez
+Médula de Blos
+Seta azul
+Escama de arrowana bomba
+Baya bomba
+Bumerán
+Hueso fósil
+Bomba de rebote
+Hueso brutal
+Carne quemada
+Moneda brutal
+Escama de arrowana reventona
+Carbalita
+Catalizador
+Fresquiñón
+Escama astillada
+Vesícula de coma
+Recomendación
+Bebida fría
+Hueso de coral
+Cristal de coral
+Hueso maldito
+Coraza de Daora
+Garra afilada de Daora+
+Escama dragoniana de Daora+
+Gema de Daora
+Cuerno de Daora+
+Cola de Daora
+Membrana de Daora
+Extracto de poder
+Zumo de poder
+Escama fallecida
+Sello primer wyveriano de lujo
+Polvo de demonio
+Droga demoníaca
+Mancha del diablo
+Piel de Deviljho
+Cráneo de Deviljho
+Garra de Deviljho
+Gema de Deviljho
+Escama de Deviljho
+Saliva de Deviljho
+Cola de Deviljho
+Colmillo de Deviljho
+Coraza de Diablos
+Colmillo de Diablos
+Médula de Diablos
+Cresta de Diablos
+Cresta de Diablos+
+Caparazón de Diablos
+Colamen de Diablos
+Piel de Dodogama+
+Mandíbula de Dodogama
+Escama de Dodogama+
+Cola de Dodogama
+Garra de Dodogama
+Reliquia de dracohueso
+Lazurita
+Baya antidragón
+Dragonita
+Nuez dragoniana
+Cristal de dracovena
+Sanguinita
+Carne somnífera
+Dundomarino
+Boñiga
+Cápsula boñiga
+Cristal de tierra
+Sangre de dragón anciano
+Hueso de dragón anciano
+Vesícula eléctrica
+Frasco vacío
+Bebida energética
+Seta excitante
+Bola transportadora
+Barro fértil
+Escama de dragón de fuego+
+Hierba de fuego
+Piedra lava
+Sello de primer wyveriano
+Vesícula flamígera
+Flamanuez
+Cápsula flash
+Luminsecto
+Helechoflor
+Moneda Voladora
+Vesícula congelante
+Vesícula de nieve
+Fucium
+Dibujo Gajalaka
+Escama de Gajau
+Piel de Gajau
+Bigote de Gajau
+Moneda Gama
+Coraza de Gastodon
+Cuerno de Gastodon
+Escama de oropel 
+Escama de oropel+
+Colmillo de Girros
+Piel de Girros
+Piel de Girros+
+Escama de Girros
+Escama de Girros+
+Draconita reluciente
+Escama reluciente
+Joyas brillantes
+Bicho divino
+Sello wyveriano de oro
+Huevo de oro
+Escama dorada
+Escama dorada+
+Cebo de pez dorado
+Gran bigote de Gajau
+Escama de arrowana bomba real
+Escama de arrowana reventona real
+Colmillo de Gran Girros
+Colmillo de Gran Girros+
+Piel de Gran Girros
+Piel de Gran Girros+
+Capucha de Gran Girros
+Capucha de Gran Girros+
+Escama de Gran Girros
+Escama de Gran Girros+
+Cola de Gran Girros
+Escama de pez pólvora real
+Gran mosca cornuda
+Garra de Gran Jagras
+Garra de Gran Jagras+
+Piel de Gran Jagras
+Piel de Gran Jagras+
+Melena de Gran Jagras
+Escama de Gran Jagras
+Escama de Gran Jagras+
+Escama de pez sushi real
+Pólvora
+Pólvora nivel 2
+Cebo de pez pólvora
+Escama de pez pólvora
+Pólvora nivel 3
+Esfera de armadura dura
+Polvo de cáscara
+Esfera de armadura pesada
+Hierba
+Medicina herbal
+Polvo de hierbas
+Draconita héroe
+Gran recomendación
+Piel de alta calidad
+Miel
+Coraza de Hornetaur
+Cabeza de Hornetaur
+Intraala de Hornetaur
+Caparazón de Hornetaur
+Ala de Hornetaur
+Moneda de rey cazador
+Escama de dragón inmortal
+Inmunizador
+Vesícula infernal
+Hierro
+Hiedra
+Piel de Jagras
+Piel de Jagras+
+Escama de Jagras
+Escama de Jagras+
+Coraza de Jyuratodus
+Colmillo de Jyuratodus
+Colmillo de Jyuratodus+
+Aleta de Jyuratodus
+Aleta de Jyuratodus+
+Escama de Jyuratodus
+Escama de Jyuratodus+
+Caparazón de Jyuratodus
+Cuerno de Kelbi
+Coraza de Kestodon
+Crin de Kestodon
+Caparazón de Kestodon
+Cuerno de Kirin celeste
+Piel de Kirin
+Piel de Kirin+
+Crin de Kirin
+Cola de Kirin
+Cuerno rayo de Kirin
+Cola rayo de Kirin
+Vale de Kirin
+Moneda Kulu
+Pico de Kulu-Ya-Ku
+Pico de Kulu-Ya-Ku+
+Piel de Kulu-Ya-Ku
+Piel de Kulu-Ya-Ku+
+Pluma de Kulu-Ya-Ku
+Pluma de Kulu-Ya-Ku+
+Escama de Kulu-Ya-Ku
+Escama de Kulu-Ya-Ku+
+Vale Kulu-Ya-Ku
+Asombrosa pepita Kulve Taroth
+Gema vela dorada Kulve Taroth
+Garra dorada de Kulve Taroth
+Escama dorada de Kulve Taroth
+Caparazón dorado Kulve Taroth
+Espiracorno dorado Kulve Taroth
+Caparazón de cola Kulve Taroth
+Vale de Kushala Daora
+Barril grande
+Bomba de barril grande
+Escama grande
+Baya adherente
+Pepita de lava
+Coraza de Lavasioth
+Colmillo de Lavasioth+
+Aleta de Lavasioth+
+Escama de Lavasioth+
+Garra de Legiana
+Garra de Legiana+
+Gema de Legiana
+Piel de Legiana
+Piel de Legiana+
+Placa de Legiana
+Escama de Legiana
+Escama de Legiana+
+Membrana de cola de Legiana
+Membrana de Legiana
+Ala de Legiana
+Garra de leshen
+Resina de leshen
+Cráneo de leshen
+Polvo de vida
+Cristal reluciente
+Mineral Loc Lac
+Coraza de Lunastra
+Gema de Lunastra
+Cuerno de Lunastra
+Crin de Lunastra
+Escama de Lunastra+
+Cola de Lunastra
+Vale Lunastra
+Ala de Lunastra
+Escama lustrosa
+Machalita
+Cuerno majestuoso
+Mandrágora
+Poción máxima
+Piel de armadura+
+Megabomba de barril
+Mega bomba de rebote
+Megazumo de poder
+Megadroga demoníaca
+Meganutrientes
+Megapoción
+Píldora de poder
+Semilla de poder
+Minagardenita
+Hueso de monstruo grande
+Hueso de monstruo mediano
+Hueso de monstruo pequeño
+Hueso de monstruo+
+Caldo de monstruo
+Fluido de monstruo
+Hueso escudo
+Hueso afilado
+Piel de musgorrino
+Joyas misteriosas
+Baya aguja
+Coraza de Nergigante
+Gema de Nergigante
+Cuerno de Nergigante+
+Placa regeneración de Nergigante
+Cola de Nergigante
+Garra de Nergigante
+Vale Nergigante
+Red
+Nitroseta
+Trofeo de valor Nora
+Extracto nutritivo
+Novacristal
+Curibaya
+Nutrientes
+Garra de Odogaron
+Garra de Odogaron+
+Colmillo de Odogaron
+Colmillo de Odogaron+
+Gema de Odogaron
+Placa de Odogaron
+Escama de Odogaron
+Escama de Odogaron+
+Tendón de Odogaron
+Tendón de Odogaron+
+Cola de Odogaron
+Vesícula neural
+Coraza de Paolumu+
+Piel de Paolumu
+Piel de Paolumu+
+Escama de Paolumu
+Escama de Paolumu+
+Caparazón de Paolumu
+Membrana de Paolumu
+Ala de Paolumu
+Vesícula paralizante
+Paraliseta
+Garra perforante
+Coraza de Rathian Rosa
+Escama de Rathian Rosa+
+Moneda pináculo
+Trampa de escollo
+Escama de platino
+Escama de platino+
+Vesícula de veneno
+Bola de humo venenoso
+Carne envenenada
+Poción
+Amuleto de poder
+Garra de poder
+Moneda Pukei
+Coraza de Pukei-Pukei
+Péndola de Pukei-Pukei
+Bolsa de Pukei-Pukei
+Bolsa de Pukei-Pukei+
+Escama de Pukei-Pukei
+Escama de Pukei-Pukei+
+Caparazón de Pukei-Pukei
+Cola de Pukei-Pukei
+Ala de Pukei-Pukei
+Hueso escogido
+Coraza de Radobaan
+Tuétano de Radobaan
+Médula de Radobaan
+Aceite de Radobaan
+Escama de Radobaan
+Escama de Radobaan+
+Caparazón de Radobaan
+Filete poco hecho
+Garra de Rath
+Coraza de Rathalos
+Moneda Rathalos
+Tuétano de Rathalos
+Médula de Rathalos
+Placa de Rathalos
+Rubí de Rathalos
+Escama de Rathalos
+Escama de Rathalos+
+Caparazón de Rathalos
+Cola de Rathalos
+Membrana de Rathalos
+Ala de Rathalos
+Coraza de Rathian
+Moneda Rathian
+Placa de Rathian
+Rubí de Rathian
+Escama de Rathian
+Escama de Rathian+
+Caparazón de Rathian
+Púa de Rathian
+Púa de Rathian+
+Membrana de Rathian
+Ración
+Carne cruda
+Orbe rojo
+Billete de la comisión
+Boñiga enrollada
+Vale de SFV
+Vale de SFV II
+Vale de SFV III
+Cápsula chillona
+Vesícula lanzagritos
+Piel de Shamos
+Piel de Shamos+
+Escama de Shamos
+Escama de Shamos+
+Garra afilada
+Draconita brillante
+Trampa eléctrica
+Huevo de plata
+Sello wyveriano de plata
+Tela siniestra
+Rajabaya
+Hierba somnífera
+Vesícula somnífera
+Barril pequeño
+Bola de humo
+Nuez de humo
+Hierba de nieve
+Telaraña
+Solitrabita
+Vale de flores de primavera
+Insectario de primavera
+Huevo de acero
+Sello wyveriano de acero
+Draconita
+Trozo de draconita
+Hueso recio
+Draconita sucia
+Insectario de verano
+Vale puesta de sol de verano
+Escama de pez sushi
+Cupón de buscatrufos
+Coraza de Teostra
+Garra de Teostra+
+Gema de Teostra
+Cuerno de Teostra+
+Crin de Teostra
+Polvo de Teostra
+Cola de Teostra
+Vale Teostra
+Membrana de Teostra
+Vesícula de rayo
+Electrobicho
+Carne tóxica
+Hongo
+Garra de Tobi-Kadachi
+Garra de Tobi-Kadachi+
+Electrodo de Tobi-Kadachi
+Electrodo de Tobi-Kadachi+
+Membrana de Tobi-Kadachi
+Piel de Tobi-Kadachi
+Piel de Tobi-Kadachi+
+Escama de Tobi-Kadachi
+Escama de Tobi-Kadachi+
+Vesícula torrencial
+Vesícula tóxica
+Bola tranquilizante
+Herramienta para trampas
+Cuerno retorcido
+Moneda Tzitzi
+Garra de Tzitzi-Ya-Ku
+Garra de Tzitzi-Ya-Ku+
+Piel de Tzitzi-Ya-Ku
+Piel de Tzitzi-Ya-Ku+
+Fotóforo de Tzitzi-Ya-Ku
+Fotóforo de Tzitzi-Ya-Ku+
+Escama de Tzitzi-Ya-Ku
+Escama de Tzitzi-Ya-Ku+
+Cráneo desconocido
+Coraza de Uragaan
+Mandíbula de Uragaan
+Tuétano de Uragaan
+Rubí de Uragaan
+Escama de Uragaan+
+Peto de Uragaan
+Coraza de Vaal Hazak
+Colmillo de Vaal Hazak+
+Gema de Vaal Hazak
+Membrana de Vaal Hazak
+Cola de Vaal Hazak
+Garra de Vaal Hazak
+Vale Vaal Hazak
+Ala de Vaal Hazak
+Cuarzo Val Habar
+Coraza de Vespoid
+Ala interior de Vespoid
+Caparazón de Vespoid
+Ala de Vespoid
+Cupón
+Piel cálida
+Hueso deforme
+Joyas deformes
+Draconita guerrero
+Filete al punto
+Aleta de caballa cuchillo
+Aleta de caballa cuchillo+
+Vale de gorgasia
+Piel de dracoalado
+Piel de dracoalado+
+Vale estrella de invierno
+Joyas gastadas
+Hueso de wyvern
+Piedra de wyvern
+Garra de Xeno'jiiva
+Gema de Xeno'jiiva
+Cuerno de Xeno'jiiva
+Caparazón de Xeno'jiiva
+Escama de alma de Xeno'jiiva
+Cola de Xeno'jiiva
+Vale Xeno'jiiva
+Velo de Xeno'jiiva
+Ala de Xeno'jiiva
+Coraza de Zorah Magdaros
+Gema de Zorah Magdaros
+Escama ígnea de Zorah Magdaros
+Magma de Zorah Magdaros
+Pleura de Zorah Magdaros
+Cresta de Zorah Magdaros
+Vale Zorah Magdaros
+(Exclusivo de reserva)
+(Rango B en misiones de arena 1-7)
+(Rango B en misiones de arena 8-9)

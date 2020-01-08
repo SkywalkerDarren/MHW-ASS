@@ -12,7 +12,7 @@
 #  If you have any questions or require more strings/options/UI changes, please message AthenaADP on Facebook or reddit.
 #
 
-#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen means nothing is shown.
+#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen (-) means nothing is shown.
 Traduit par Lightphenix
 
 #Menu options
@@ -51,14 +51,18 @@ Trier alphabétiquement
 
 &Donation
 &Informations talents
+Informations talents
 
 #This option opens a browser to my Facebook page
 Vérifier les MàJ
 
 &A propos
-Mes &Joyaux
+A propos
+Mes &Joyaux...
+Mes Joyaux
 &Importer
 &Recherche rapide
+Recherche avancée...
 Recherche avancée
 &Annuler
 &Défaut
@@ -197,3 +201,16 @@ Sans %1
 
 #Used in the "My Decorations" dialog to show skills/decorations that are "maxed out" i.e. you have enough decorations to get max level with the skill
 Complet
+
+#Prefix for slot levels
+Nv
+
+#Tooltips
+Clique droit sur armures/talents pour plus d'infos
+Choisir les décorations à chercher
+Choisir un talent supplémentaire pour filtrer les résultats qui ne l'ont pas
+Choisir un critère pour trier les résultats
+Choisir le niveau de quête auquel vous avez accès
+Choisir le niveau du slot %1
+Clique pour retirer les options de talent
+Clique pour ajouter des options de talent

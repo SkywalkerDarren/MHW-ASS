@@ -12,7 +12,7 @@
 #  If you have any questions or require more strings/options/UI changes, please message AthenaADP on Facebook or reddit.
 #
 
-#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen means nothing is shown.
+#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen (-) means nothing is shown.
 -
 
 #Menu options
@@ -51,15 +51,19 @@
 
 기부(&D)
 스킬 정보(&S)
+스킬 정보
 
 #This option opens a browser to my Facebook page
 업데이트 확인(&U)
 
 About(&A)
+About
 내 장식주(&D)
+내 장식주
 불러오기(&I)
 빠른 검색(&Q)
 고급 검색(&A)
+고급 검색
 취소(&C)
 초기값(&D)
 
@@ -196,3 +200,16 @@ No %1
 
 #Used in the "My Decorations" dialog to show skills/decorations that are "maxed out" i.e. you have enough decorations to get max level with the skill
 전부 모은 장식주
+
+#Prefix for slot levels
+Lv
+
+#Tooltips
+방어구 또는 스킬의 자세한 정보를 보려면 우클릭
+검색할 장식주를 선택
+없는 결과를 필터링할 추가스킬을 선택
+결과를 정렬할 기준 선택
+수주 가능한 퀘스트 수준 선택
+무기 슬롯 %1 수준을 선택
+스킬 옵션을 제거하려면 클릭
+스킬 옵션을 추가하려면 클릭

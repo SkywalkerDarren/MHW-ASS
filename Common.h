@@ -78,12 +78,14 @@ namespace Utility
 	void UpdateContextMenu( System::Windows::Forms::ContextMenuStrip^ strip, Charm^ charm );
 }
 
+//bool CanDisplayString( System::String^ text );
+
 void myassert( const bool val, System::String^ message );
 void myassert( const bool val, System::String^ message, System::String^ suffix_copy );
 
 #ifdef _DEBUG
-#define Assert( X, Y ) myassert( !!(X), Y )
-#define AssertCopy( X, Y, Z ) myassert( !!(X), Y, Z )
+#define Assert( CONDITION, MESSAGE ) myassert( !!(CONDITION), MESSAGE )
+#define AssertCopy( CONDITION, MESSAGE, COPY_TEXT_TO_CLIPBOARD ) myassert( !!(CONDITION), MESSAGE, COPY_TEXT_TO_CLIPBOARD )
 #else
 #define Assert( X, Y )
 #define AssertCopy( X, Y, Z )
@@ -183,12 +185,16 @@ ref struct StringTable
 		SortSkillsAlphabetically,
 		Donate,
 		SkillHelp,
+		SkillHelpForm,
 		CheckForUpdates,
 		About,
-		MyDecorations,
+		AboutForm,
+		MyDecorationsButton,
+		MyDecorationsForm,
 		Import,
 		QuickSearch,
-		AdvancedSearch,
+		AdvancedSearchButton,
+		AdvancedSearchForm,
 		Cancel,
 		Default,
 		AdvancedNone,
@@ -270,6 +276,15 @@ ref struct StringTable
 		NumDecorations,
 		ExcludeSkill,
 		Completed,
+		SlotLevelPrefix,
+		TipResults,
+		TipDecorations,
+		TipFilter,
+		TipSort,
+		TipQuestLevel,
+		TipWeaponSlotLevel,
+		TipRemoveSkills,
+		TipAddSkills,
 		NumStrings
 	};
 };

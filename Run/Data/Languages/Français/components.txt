@@ -4,6 +4,9 @@ Graine de ténacité
 Sphère d'armure II
 Éclat d'éthérite
 Os ancien
+Os maudit ancien
+Griffe de leshen ancien
+Crâne de leshen ancien
 Potion ancestrale
 Croc Anjanath
 Croc Anjanath +
@@ -18,7 +21,7 @@ Plaque Anjanath
 Queue Anjanath
 Antidote
 Herbe à antidote
-Appreciation Ticket
+Ticket Anniversaire
 Poche d'eau
 Pierre marine
 Sphère d'armure
@@ -92,6 +95,7 @@ Certificat du champion
 Boisson fraîche
 Os de corail
 Cristal de corail
+Os maudit
 Cuirasse Daora
 Griffe Daora +
 Écaille Daora +
@@ -292,6 +296,9 @@ Plaque Legiana
 Palmure de queue Legiana
 Palmure Legiana
 Aile Legiana
+Griffe de leshen
+Résine de leshen
+Crâne de leshen
 Poudre de vie
 Cristal de lumière
 Minerai loc lac
@@ -335,6 +342,7 @@ Corne Nergigante +
 Plaque régénératrice Nergigante
 Queue Nergigante
 Serre Nergigante
+Ticket Nergigante
 Filet
 Champinitro
 Trophée de valeur Nora

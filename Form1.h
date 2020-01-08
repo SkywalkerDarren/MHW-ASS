@@ -92,7 +92,7 @@ namespace MHWASS
 		const static int MaxSolutions = 100000;
 		static Threading::Mutex^ progress_mutex = gcnew Threading::Mutex;
 		static Threading::Mutex^ results_mutex = gcnew Threading::Mutex;
-		static Threading::Mutex^ charm_map_mutex = gcnew Threading::Mutex;
+		static Threading::Mutex^ all_solutions_mutex = gcnew Threading::Mutex;
 		static Threading::Mutex^ worker_mutex = gcnew Threading::Mutex;
 		String^ CFG_FILE;
 		String^ endl;
@@ -130,9 +130,9 @@ namespace MHWASS
 	private: System::Windows::Forms::RadioButton^  rdoMale;
 	private: System::Windows::Forms::Button^  btnAdvancedSearch;
 	private: MHWASS::NumericUpDownHR^  nudHR;
-	private: System::Windows::Forms::NumericUpDown^  nudWeaponSlots1;
-	private: System::Windows::Forms::NumericUpDown^  nudWeaponSlots2;
-	private: System::Windows::Forms::NumericUpDown^  nudWeaponSlots3;
+	private: MHWASS::NumericUpDownSlot^  nudWeaponSlots1;
+	private: MHWASS::NumericUpDownSlot^  nudWeaponSlots2;
+	private: MHWASS::NumericUpDownSlot^  nudWeaponSlots3;
 	private: System::Windows::Forms::GroupBox^  groupBox1;
 	private: System::Windows::Forms::Label^  lblHR;
 	private: System::Windows::Forms::Label^  lblSlots;
@@ -176,6 +176,12 @@ namespace MHWASS
 	private: System::Windows::Forms::ToolStripMenuItem^  mnuAlwaysSearchAlpha;
 	private: System::Windows::Forms::Label^  lblAddSkills;
 	private: System::Windows::Forms::Label^  lblRemoveSkills;
+	private: System::Windows::Forms::ToolTip^  tipWeaponSlots;
+	private: System::Windows::Forms::ToolTip^  tipSkills;
+	private: System::Windows::Forms::ToolTip^  tipQuestLevel;
+	private: System::Windows::Forms::ToolTip^  tipResults;
+	private: System::Windows::Forms::ToolTip^  tipSortFilter;
+	private: System::Windows::Forms::ToolTip^  tipDecorations;
 
 #pragma endregion
 
@@ -235,6 +241,9 @@ namespace MHWASS
 				 List_t< Skill^ >^ the_list = mnuSortSkillsAlphabetically->Checked ? %Skill::ordered_skills : %Skill::static_skills;
 				 for each( Skill^ skill in the_list )
 				 {
+					 if( skill->ability->set_ability )
+						 continue;
+
 					 if( Utility::Contains( disallowed, skill->ability ) )
 						 continue;
 
@@ -373,7 +382,10 @@ namespace MHWASS
 			 {
 				 ComboBox^ box = safe_cast<ComboBox^>( cmsSkills->SourceControl );
 				 if( box )
+				 {
 					 box->SelectedIndex = -1;
+					 cmbSkill_SelectedIndexChanged( box, nullptr );
+				 }
 			 }
 
 			 void InitializeComboBox( const int i )
@@ -424,9 +436,12 @@ namespace MHWASS
 			updating_extra_skills = false;
 			InitializeComponent();
 			InitializeComboBoxes();
+
 			this->Text += GAMES;
+			
 			mnuNumResults->KeyPress += gcnew KeyPressEventHandler( this, &Form1::MaxResultsTextBoxKeyPress );
 			mnuNumResults->TextChanged += gcnew EventHandler( this, &Form1::MaxResultsTextChanged );
+			mnuAllowEventArmor->DropDown->Closing += gcnew ToolStripDropDownClosingEventHandler( this, &Form1::EventArmorMenuClosing );
 			cmsSolutions->Closing += gcnew ToolStripDropDownClosingEventHandler( this, &Form1::contextMenuStrip1_Closing );
 			cmbFilterByExtraSkill->SelectedIndex = 0;
 			mnuClearSkill->Click += gcnew EventHandler( this, &Form1::ClearSkillClicked );
@@ -466,6 +481,8 @@ namespace MHWASS
 
 			Text += " v" + STRINGIZE( VERSION_NO );
 
+			Focus(); //without this, the icon won't show in the taskbar, for some reason
+
 			construction_complete = true;
 		}
 
@@ -493,6 +510,7 @@ namespace MHWASS
 			array< String^ >^ langs = IO::Directory::GetDirectories( L"Data/Languages" );
 			for each( String^% lang in langs )
 			{
+				//Assert( CanDisplayString( lang ) , "Can't display language" );
 				ToolStripMenuItem^ item = gcnew ToolStripMenuItem( lang->Substring( lang->LastIndexOf( L'\\' ) + 1 ) );
 				item->Click += gcnew EventHandler( this, &Form1::LanguageSelect_Click );
 				mnuLanguage->DropDownItems->Add( item );
@@ -538,7 +556,7 @@ namespace MHWASS
 				solution->extra_skills.Add( Skill::static_skills[ index ] );
 			}
 
-			solution->CalculateData( int( nudHR->Value ) );
+			solution->CalculateData();
 
 			all_solutions.Add( solution );
 		}
@@ -684,6 +702,10 @@ namespace MHWASS
 				{
 					mnuAllowFairWind->Checked = Convert::ToBoolean( line->Substring( 14 ) );
 				}
+				else if( line->StartsWith( L"ALWAYSUSEALPHA=" ) )
+				{
+					mnuAlwaysSearchAlpha->Checked = Convert::ToBoolean( line->Substring( 15 ) );
+				}
 				else if( line->StartsWith( L"PREVIEWZOOM=" ) )
 				{
 					const int zoom = Convert::ToInt32( line->Substring( 12 ) );
@@ -713,6 +735,10 @@ namespace MHWASS
 					nudWeaponSlots1->Value = Convert::ToInt32( line->Substring( 12, 1 ) );
 					nudWeaponSlots2->Value = Convert::ToInt32( line->Substring( 13, 1 ) );
 					nudWeaponSlots3->Value = Convert::ToInt32( line->Substring( 14, 1 ) );
+				}
+				else if( line->StartsWith( L"WEAPONSLOTSSHOWN=" ) )
+				{
+					//ignore
 				}
 				else if( line->StartsWith( L"ADVWIDTH=" ) )
 				{
@@ -845,6 +871,7 @@ namespace MHWASS
 			fout.WriteLine( L"SHOWMATLIST=" + mnuPrintMaterials->Checked );
 			fout.WriteLine( L"SORTALPHA=" + mnuSortSkillsAlphabetically->Checked );
 			fout.WriteLine( L"ALLOWFAIRWIND=" + mnuAllowFairWind->Checked );
+			fout.WriteLine( L"ALWAYSUSEALPHA=" + mnuAlwaysSearchAlpha->Checked );
 			fout.WriteLine( L"PREVIEWZOOM=" + PreviewImage::zoom );
 			fout.WriteLine( L"SORTTYPE=" + cmbSort->SelectedIndex );
 			fout.WriteLine( L"DECOTYPE=" + cmbDecorationSelect->SelectedIndex );
@@ -949,11 +976,7 @@ namespace MHWASS
 			this->components = ( gcnew System::ComponentModel::Container() );
 			System::ComponentModel::ComponentResourceManager^  resources = ( gcnew System::ComponentModel::ComponentResourceManager( Form1::typeid ) );
 			this->groupBox1 = ( gcnew System::Windows::Forms::GroupBox() );
-			this->nudWeaponSlots1 = ( gcnew System::Windows::Forms::NumericUpDown() );
-			this->nudWeaponSlots2 = ( gcnew System::Windows::Forms::NumericUpDown() );
-			this->nudWeaponSlots3 = ( gcnew System::Windows::Forms::NumericUpDown() );
 			this->lblSlots = ( gcnew System::Windows::Forms::Label() );
-			this->nudHR = ( gcnew MHWASS::NumericUpDownHR() );
 			this->lblHR = ( gcnew System::Windows::Forms::Label() );
 			this->grpSkills = ( gcnew System::Windows::Forms::GroupBox() );
 			this->lblRemoveSkills = ( gcnew System::Windows::Forms::Label() );
@@ -1005,11 +1028,17 @@ namespace MHWASS
 			this->cmsCharms = ( gcnew System::Windows::Forms::ContextMenuStrip( this->components ) );
 			this->cmsSkills = ( gcnew System::Windows::Forms::ContextMenuStrip( this->components ) );
 			this->mnuClearSkill = ( gcnew System::Windows::Forms::ToolStripMenuItem() );
+			this->tipWeaponSlots = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->tipSkills = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->tipQuestLevel = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->tipResults = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->tipSortFilter = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->tipDecorations = ( gcnew System::Windows::Forms::ToolTip( this->components ) );
+			this->nudWeaponSlots1 = ( gcnew MHWASS::NumericUpDownSlot() );
+			this->nudWeaponSlots2 = ( gcnew MHWASS::NumericUpDownSlot() );
+			this->nudWeaponSlots3 = ( gcnew MHWASS::NumericUpDownSlot() );
+			this->nudHR = ( gcnew MHWASS::NumericUpDownHR() );
 			this->groupBox1->SuspendLayout();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots1 ) )->BeginInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots2 ) )->BeginInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots3 ) )->BeginInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudHR ) )->BeginInit();
 			this->grpSkills->SuspendLayout();
 			this->groupBox4->SuspendLayout();
 			this->grpResults->SuspendLayout();
@@ -1018,82 +1047,39 @@ namespace MHWASS
 			this->grpSortFilter->SuspendLayout();
 			this->grpDecorations->SuspendLayout();
 			this->cmsSkills->SuspendLayout();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots1 ) )->BeginInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots2 ) )->BeginInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots3 ) )->BeginInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudHR ) )->BeginInit();
 			this->SuspendLayout();
 			// 
 			// groupBox1
 			// 
 			this->groupBox1->Controls->Add( this->nudWeaponSlots1 );
 			this->groupBox1->Controls->Add( this->nudWeaponSlots2 );
-			this->groupBox1->Controls->Add( this->nudWeaponSlots3 );
 			this->groupBox1->Controls->Add( this->lblSlots );
+			this->groupBox1->Controls->Add( this->nudWeaponSlots3 );
 			this->groupBox1->Controls->Add( this->nudHR );
 			this->groupBox1->Controls->Add( this->lblHR );
-			this->groupBox1->Location = System::Drawing::Point( 12, 27 );
+			this->groupBox1->Location = System::Drawing::Point( 6, 27 );
 			this->groupBox1->Name = L"groupBox1";
-			this->groupBox1->Size = System::Drawing::Size( 174, 81 );
+			this->groupBox1->Size = System::Drawing::Size( 206, 81 );
 			this->groupBox1->TabIndex = 0;
 			this->groupBox1->TabStop = false;
-			// 
-			// nudWeaponSlots1
-			// 
-			this->nudWeaponSlots1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
-			this->nudWeaponSlots1->BackColor = System::Drawing::SystemColors::Control;
-			this->nudWeaponSlots1->Location = System::Drawing::Point( 82, 46 );
-			this->nudWeaponSlots1->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
-			this->nudWeaponSlots1->Name = L"nudWeaponSlots1";
-			this->nudWeaponSlots1->Size = System::Drawing::Size( 27, 20 );
-			this->nudWeaponSlots1->TabIndex = 7;
-			this->nudWeaponSlots1->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-			// 
-			// nudWeaponSlots2
-			// 
-			this->nudWeaponSlots2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
-			this->nudWeaponSlots2->BackColor = System::Drawing::SystemColors::Control;
-			this->nudWeaponSlots2->Location = System::Drawing::Point( 111, 46 );
-			this->nudWeaponSlots2->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
-			this->nudWeaponSlots2->Name = L"nudWeaponSlots2";
-			this->nudWeaponSlots2->Size = System::Drawing::Size( 27, 20 );
-			this->nudWeaponSlots2->TabIndex = 6;
-			this->nudWeaponSlots2->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-			// 
-			// nudWeaponSlots3
-			// 
-			this->nudWeaponSlots3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
-			this->nudWeaponSlots3->BackColor = System::Drawing::SystemColors::Control;
-			this->nudWeaponSlots3->Location = System::Drawing::Point( 141, 46 );
-			this->nudWeaponSlots3->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
-			this->nudWeaponSlots3->Name = L"nudWeaponSlots3";
-			this->nudWeaponSlots3->Size = System::Drawing::Size( 27, 20 );
-			this->nudWeaponSlots3->TabIndex = 5;
-			this->nudWeaponSlots3->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
 			// 
 			// lblSlots
 			// 
 			this->lblSlots->AutoSize = true;
-			this->lblSlots->Location = System::Drawing::Point( 5, 48 );
+			this->lblSlots->Location = System::Drawing::Point( 4, 48 );
 			this->lblSlots->Name = L"lblSlots";
 			this->lblSlots->Size = System::Drawing::Size( 74, 13 );
 			this->lblSlots->TabIndex = 4;
 			this->lblSlots->Text = L"Weapon Slots";
 			// 
-			// nudHR
-			// 
-			this->nudHR->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
-			this->nudHR->BackColor = System::Drawing::SystemColors::Control;
-			this->nudHR->Location = System::Drawing::Point( 122, 20 );
-			this->nudHR->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 9, 0, 0, 0 } );
-			this->nudHR->Minimum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 1, 0, 0, 0 } );
-			this->nudHR->Name = L"nudHR";
-			this->nudHR->Size = System::Drawing::Size( 46, 20 );
-			this->nudHR->TabIndex = 1;
-			this->nudHR->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
-			this->nudHR->Value = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 9, 0, 0, 0 } );
-			this->nudHR->ValueChanged += gcnew System::EventHandler( this, &Form1::nudHR_ValueChanged );
-			// 
 			// lblHR
 			// 
 			this->lblHR->AutoSize = true;
-			this->lblHR->Location = System::Drawing::Point( 5, 22 );
+			this->lblHR->Location = System::Drawing::Point( 4, 22 );
 			this->lblHR->Name = L"lblHR";
 			this->lblHR->Size = System::Drawing::Size( 64, 13 );
 			this->lblHR->TabIndex = 0;
@@ -1105,9 +1091,9 @@ namespace MHWASS
 				| System::Windows::Forms::AnchorStyles::Left ) );
 			this->grpSkills->Controls->Add( this->lblRemoveSkills );
 			this->grpSkills->Controls->Add( this->lblAddSkills );
-			this->grpSkills->Location = System::Drawing::Point( 12, 169 );
+			this->grpSkills->Location = System::Drawing::Point( 6, 169 );
 			this->grpSkills->Name = L"grpSkills";
-			this->grpSkills->Size = System::Drawing::Size( 194, 210 );
+			this->grpSkills->Size = System::Drawing::Size( 200, 210 );
 			this->grpSkills->TabIndex = 0;
 			this->grpSkills->TabStop = false;
 			this->grpSkills->Text = L"Skills";
@@ -1123,6 +1109,7 @@ namespace MHWASS
 			this->lblRemoveSkills->Size = System::Drawing::Size( 20, 13 );
 			this->lblRemoveSkills->TabIndex = 1;
 			this->lblRemoveSkills->Text = L"－";
+			this->tipSkills->SetToolTip( this->lblRemoveSkills, L"Click to remove Skill options" );
 			this->lblRemoveSkills->Click += gcnew System::EventHandler( this, &Form1::lblRemoveSkills_Click );
 			// 
 			// lblAddSkills
@@ -1136,6 +1123,7 @@ namespace MHWASS
 			this->lblAddSkills->Size = System::Drawing::Size( 20, 13 );
 			this->lblAddSkills->TabIndex = 0;
 			this->lblAddSkills->Text = L"＋";
+			this->tipSkills->SetToolTip( this->lblAddSkills, L"Click to add more Skill options" );
 			this->lblAddSkills->Click += gcnew System::EventHandler( this, &Form1::lblAddSkills_Click );
 			// 
 			// btnSearch
@@ -1152,7 +1140,7 @@ namespace MHWASS
 			// 
 			this->progressBar1->Location = System::Drawing::Point( 6, 45 );
 			this->progressBar1->Name = L"progressBar1";
-			this->progressBar1->Size = System::Drawing::Size( 340, 10 );
+			this->progressBar1->Size = System::Drawing::Size( 350, 10 );
 			this->progressBar1->Step = 1;
 			this->progressBar1->TabIndex = 6;
 			// 
@@ -1167,9 +1155,10 @@ namespace MHWASS
 			this->txtSolutions->Location = System::Drawing::Point( 6, 16 );
 			this->txtSolutions->Name = L"txtSolutions";
 			this->txtSolutions->ReadOnly = true;
-			this->txtSolutions->Size = System::Drawing::Size( 332, 400 );
+			this->txtSolutions->Size = System::Drawing::Size( 321, 400 );
 			this->txtSolutions->TabIndex = 0;
 			this->txtSolutions->Text = L"";
+			this->tipResults->SetToolTip( this->txtSolutions, L"Right-click skills or armor for more info" );
 			this->txtSolutions->WordWrap = false;
 			this->txtSolutions->KeyDown += gcnew System::Windows::Forms::KeyEventHandler( this, &Form1::KeyDown );
 			// 
@@ -1186,9 +1175,9 @@ namespace MHWASS
 			this->groupBox4->Controls->Add( this->btnCancel );
 			this->groupBox4->Controls->Add( this->btnSearch );
 			this->groupBox4->Controls->Add( this->progressBar1 );
-			this->groupBox4->Location = System::Drawing::Point( 12, 385 );
+			this->groupBox4->Location = System::Drawing::Point( 6, 385 );
 			this->groupBox4->Name = L"groupBox4";
-			this->groupBox4->Size = System::Drawing::Size( 353, 63 );
+			this->groupBox4->Size = System::Drawing::Size( 363, 63 );
 			this->groupBox4->TabIndex = 5;
 			this->groupBox4->TabStop = false;
 			// 
@@ -1198,7 +1187,7 @@ namespace MHWASS
 			this->btnAdvancedSearch->Name = L"btnAdvancedSearch";
 			this->btnAdvancedSearch->Size = System::Drawing::Size( 137, 27 );
 			this->btnAdvancedSearch->TabIndex = 1;
-			this->btnAdvancedSearch->Text = L"&Advanced Search";
+			this->btnAdvancedSearch->Text = L"&Advanced Search...";
 			this->btnAdvancedSearch->UseVisualStyleBackColor = true;
 			this->btnAdvancedSearch->Click += gcnew System::EventHandler( this, &Form1::btnAdvancedSearch_Click );
 			// 
@@ -1206,9 +1195,9 @@ namespace MHWASS
 			// 
 			this->btnCancel->Location = System::Drawing::Point( 262, 12 );
 			this->btnCancel->Name = L"btnCancel";
-			this->btnCancel->Size = System::Drawing::Size( 85, 27 );
+			this->btnCancel->Size = System::Drawing::Size( 94, 27 );
 			this->btnCancel->TabIndex = 2;
-			this->btnCancel->Text = L"Ca&ncel";
+			this->btnCancel->Text = L"&Cancel";
 			this->btnCancel->UseVisualStyleBackColor = true;
 			this->btnCancel->Click += gcnew System::EventHandler( this, &Form1::btnCancel_Click );
 			// 
@@ -1220,18 +1209,19 @@ namespace MHWASS
 			this->grpResults->Controls->Add( this->txtSolutions );
 			this->grpResults->Location = System::Drawing::Point( 373, 27 );
 			this->grpResults->Name = L"grpResults";
-			this->grpResults->Size = System::Drawing::Size( 344, 422 );
+			this->grpResults->Size = System::Drawing::Size( 333, 422 );
 			this->grpResults->TabIndex = 7;
 			this->grpResults->TabStop = false;
 			this->grpResults->Text = L"Results";
 			// 
 			// btnDecorations
 			// 
-			this->btnDecorations->Location = System::Drawing::Point( 100, 18 );
+			this->btnDecorations->Location = System::Drawing::Point( 111, 18 );
 			this->btnDecorations->Name = L"btnDecorations";
 			this->btnDecorations->Size = System::Drawing::Size( 89, 23 );
 			this->btnDecorations->TabIndex = 1;
-			this->btnDecorations->Text = L"My &Decorations";
+			this->btnDecorations->Text = L"My &Decos...";
+			this->tipDecorations->SetToolTip( this->btnDecorations, L"Manage your personal collection of Decorations to use when searching" );
 			this->btnDecorations->UseVisualStyleBackColor = true;
 			this->btnDecorations->Click += gcnew System::EventHandler( this, &Form1::btnDecorations_Click );
 			// 
@@ -1239,9 +1229,9 @@ namespace MHWASS
 			// 
 			this->grpSkillFilters->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom )
 				| System::Windows::Forms::AnchorStyles::Left ) );
-			this->grpSkillFilters->Location = System::Drawing::Point( 212, 169 );
+			this->grpSkillFilters->Location = System::Drawing::Point( 210, 169 );
 			this->grpSkillFilters->Name = L"grpSkillFilters";
-			this->grpSkillFilters->Size = System::Drawing::Size( 153, 210 );
+			this->grpSkillFilters->Size = System::Drawing::Size( 159, 210 );
 			this->grpSkillFilters->TabIndex = 1;
 			this->grpSkillFilters->TabStop = false;
 			this->grpSkillFilters->Text = L"Skill Filters";
@@ -1255,7 +1245,7 @@ namespace MHWASS
 			} );
 			this->menuStrip1->Location = System::Drawing::Point( 0, 0 );
 			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size( 729, 24 );
+			this->menuStrip1->Size = System::Drawing::Size( 712, 24 );
 			this->menuStrip1->TabIndex = 16;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
@@ -1468,7 +1458,7 @@ namespace MHWASS
 			// 
 			this->grpGender->Controls->Add( this->rdoFemale );
 			this->grpGender->Controls->Add( this->rdoMale );
-			this->grpGender->Location = System::Drawing::Point( 12, 114 );
+			this->grpGender->Location = System::Drawing::Point( 6, 114 );
 			this->grpGender->Name = L"grpGender";
 			this->grpGender->Size = System::Drawing::Size( 154, 49 );
 			this->grpGender->TabIndex = 2;
@@ -1502,9 +1492,9 @@ namespace MHWASS
 			// 
 			this->grpSortFilter->Controls->Add( this->cmbFilterByExtraSkill );
 			this->grpSortFilter->Controls->Add( this->cmbSort );
-			this->grpSortFilter->Location = System::Drawing::Point( 192, 27 );
+			this->grpSortFilter->Location = System::Drawing::Point( 216, 27 );
 			this->grpSortFilter->Name = L"grpSortFilter";
-			this->grpSortFilter->Size = System::Drawing::Size( 173, 81 );
+			this->grpSortFilter->Size = System::Drawing::Size( 153, 81 );
 			this->grpSortFilter->TabIndex = 1;
 			this->grpSortFilter->TabStop = false;
 			this->grpSortFilter->Text = L"Sort/Filter Results";
@@ -1518,8 +1508,9 @@ namespace MHWASS
 			this->cmbFilterByExtraSkill->Items->AddRange( gcnew cli::array< System::Object^  >( 1 ) { L"No extra skill filtering" } );
 			this->cmbFilterByExtraSkill->Location = System::Drawing::Point( 6, 46 );
 			this->cmbFilterByExtraSkill->Name = L"cmbFilterByExtraSkill";
-			this->cmbFilterByExtraSkill->Size = System::Drawing::Size( 161, 21 );
+			this->cmbFilterByExtraSkill->Size = System::Drawing::Size( 141, 21 );
 			this->cmbFilterByExtraSkill->TabIndex = 2;
+			this->tipSortFilter->SetToolTip( this->cmbFilterByExtraSkill, L"Select an extra skill to filter out results which lack that skill" );
 			this->cmbFilterByExtraSkill->SelectedIndexChanged += gcnew System::EventHandler( this, &Form1::cmbFilterByExtraSkill_SelectedIndexChanged );
 			// 
 			// cmbSort
@@ -1534,39 +1525,35 @@ namespace MHWASS
 					L"Thunder res", L"Water res", L"Base defence", L"Max defence", L"Aug defence", L"Difficulty", L"Rarity", L"Slots spare", L"Family",
 					L"Extra Skills"
 			} );
-			this->cmbSort->Location = System::Drawing::Point( 5, 20 );
+			this->cmbSort->Location = System::Drawing::Point( 6, 20 );
 			this->cmbSort->Name = L"cmbSort";
-			this->cmbSort->Size = System::Drawing::Size( 161, 21 );
+			this->cmbSort->Size = System::Drawing::Size( 141, 21 );
 			this->cmbSort->TabIndex = 0;
+			this->tipSortFilter->SetToolTip( this->cmbSort, L"Select criteria to sort results by" );
 			this->cmbSort->SelectedIndexChanged += gcnew System::EventHandler( this, &Form1::cmbSort_SelectedIndexChanged );
 			// 
 			// grpDecorations
 			// 
 			this->grpDecorations->Controls->Add( this->cmbDecorationSelect );
 			this->grpDecorations->Controls->Add( this->btnDecorations );
-			this->grpDecorations->Location = System::Drawing::Point( 172, 114 );
+			this->grpDecorations->Location = System::Drawing::Point( 164, 114 );
 			this->grpDecorations->Name = L"grpDecorations";
-			this->grpDecorations->Size = System::Drawing::Size( 193, 49 );
+			this->grpDecorations->Size = System::Drawing::Size( 205, 49 );
 			this->grpDecorations->TabIndex = 3;
 			this->grpDecorations->TabStop = false;
 			this->grpDecorations->Text = L"Decorations";
 			// 
 			// cmbDecorationSelect
 			// 
-			this->cmbDecorationSelect->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left )
-				| System::Windows::Forms::AnchorStyles::Right ) );
 			this->cmbDecorationSelect->ContextMenuStrip = this->cmsCharms;
 			this->cmbDecorationSelect->DropDownStyle = System::Windows::Forms::ComboBoxStyle::DropDownList;
 			this->cmbDecorationSelect->FormattingEnabled = true;
-			this->cmbDecorationSelect->Items->AddRange( gcnew cli::array< System::Object^  >( 3 )
-			{
-				L"Use no decorations", L"Use my decorations",
-					L"Use all decorations"
-			} );
+			this->cmbDecorationSelect->Items->AddRange( gcnew cli::array< System::Object^  >( 3 ) { L"Use none", L"Use mine", L"Use all" } );
 			this->cmbDecorationSelect->Location = System::Drawing::Point( 6, 19 );
 			this->cmbDecorationSelect->Name = L"cmbDecorationSelect";
-			this->cmbDecorationSelect->Size = System::Drawing::Size( 88, 21 );
+			this->cmbDecorationSelect->Size = System::Drawing::Size( 101, 21 );
 			this->cmbDecorationSelect->TabIndex = 0;
+			this->tipDecorations->SetToolTip( this->cmbDecorationSelect, L"Select which Decorations to use when searching" );
 			// 
 			// cmsCharms
 			// 
@@ -1585,11 +1572,90 @@ namespace MHWASS
 			this->mnuClearSkill->Size = System::Drawing::Size( 101, 22 );
 			this->mnuClearSkill->Text = L"&Clear";
 			// 
+			// tipWeaponSlots
+			// 
+			this->tipWeaponSlots->ToolTipTitle = L"Weapon Slots";
+			// 
+			// tipSkills
+			// 
+			this->tipSkills->ToolTipTitle = L"Skills";
+			// 
+			// tipQuestLevel
+			// 
+			this->tipQuestLevel->ToolTipTitle = L"Quest Level";
+			// 
+			// tipResults
+			// 
+			this->tipResults->ToolTipTitle = L"Results";
+			// 
+			// tipSortFilter
+			// 
+			this->tipSortFilter->ToolTipTitle = L"Sort/Filter Results";
+			// 
+			// tipDecorations
+			// 
+			this->tipDecorations->ToolTipTitle = L"Decorations";
+			// 
+			// nudWeaponSlots1
+			// 
+			this->nudWeaponSlots1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
+			this->nudWeaponSlots1->BackColor = System::Drawing::SystemColors::Control;
+			this->nudWeaponSlots1->Location = System::Drawing::Point( 79, 46 );
+			this->nudWeaponSlots1->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
+			this->nudWeaponSlots1->Name = L"nudWeaponSlots1";
+			this->nudWeaponSlots1->Size = System::Drawing::Size( 40, 20 );
+			this->nudWeaponSlots1->TabIndex = 7;
+			this->nudWeaponSlots1->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			this->tipWeaponSlots->SetToolTip( this->nudWeaponSlots1, L"Set the level of Weapon Slot 1" );
+			this->nudWeaponSlots1->ValueChanged += gcnew System::EventHandler( this, &Form1::nudWeaponSlots1_ValueChanged );
+			// 
+			// nudWeaponSlots2
+			// 
+			this->nudWeaponSlots2->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
+			this->nudWeaponSlots2->BackColor = System::Drawing::SystemColors::Control;
+			this->nudWeaponSlots2->Enabled = false;
+			this->nudWeaponSlots2->Location = System::Drawing::Point( 120, 46 );
+			this->nudWeaponSlots2->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
+			this->nudWeaponSlots2->Name = L"nudWeaponSlots2";
+			this->nudWeaponSlots2->Size = System::Drawing::Size( 40, 20 );
+			this->nudWeaponSlots2->TabIndex = 6;
+			this->nudWeaponSlots2->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			this->tipWeaponSlots->SetToolTip( this->nudWeaponSlots2, L"Set the level of Weapon Slot 2" );
+			this->nudWeaponSlots2->ValueChanged += gcnew System::EventHandler( this, &Form1::nudWeaponSlots2_ValueChanged );
+			// 
+			// nudWeaponSlots3
+			// 
+			this->nudWeaponSlots3->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
+			this->nudWeaponSlots3->BackColor = System::Drawing::SystemColors::Control;
+			this->nudWeaponSlots3->Enabled = false;
+			this->nudWeaponSlots3->Location = System::Drawing::Point( 161, 46 );
+			this->nudWeaponSlots3->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 3, 0, 0, 0 } );
+			this->nudWeaponSlots3->Name = L"nudWeaponSlots3";
+			this->nudWeaponSlots3->Size = System::Drawing::Size( 40, 20 );
+			this->nudWeaponSlots3->TabIndex = 5;
+			this->nudWeaponSlots3->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			this->tipWeaponSlots->SetToolTip( this->nudWeaponSlots3, L"Set the level of Weapon Slot 3" );
+			// 
+			// nudHR
+			// 
+			this->nudHR->Anchor = static_cast<System::Windows::Forms::AnchorStyles>( ( System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right ) );
+			this->nudHR->BackColor = System::Drawing::SystemColors::Control;
+			this->nudHR->Location = System::Drawing::Point( 161, 20 );
+			this->nudHR->Maximum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 9, 0, 0, 0 } );
+			this->nudHR->Minimum = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 1, 0, 0, 0 } );
+			this->nudHR->Name = L"nudHR";
+			this->nudHR->Size = System::Drawing::Size( 40, 20 );
+			this->nudHR->TabIndex = 1;
+			this->nudHR->TextAlign = System::Windows::Forms::HorizontalAlignment::Center;
+			this->tipQuestLevel->SetToolTip( this->nudHR, L"Set level of quests you have access to" );
+			this->nudHR->Value = System::Decimal( gcnew cli::array< System::Int32 >( 4 ) { 9, 0, 0, 0 } );
+			this->nudHR->ValueChanged += gcnew System::EventHandler( this, &Form1::nudHR_ValueChanged );
+			// 
 			// Form1
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF( 6, 13 );
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size( 729, 457 );
+			this->ClientSize = System::Drawing::Size( 712, 457 );
 			this->Controls->Add( this->grpSkills );
 			this->Controls->Add( this->grpSkillFilters );
 			this->Controls->Add( this->grpSortFilter );
@@ -1604,10 +1670,6 @@ namespace MHWASS
 			this->Text = L"Athena\'s ASS for ";
 			this->groupBox1->ResumeLayout( false );
 			this->groupBox1->PerformLayout();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots1 ) )->EndInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots2 ) )->EndInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots3 ) )->EndInit();
-			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudHR ) )->EndInit();
 			this->grpSkills->ResumeLayout( false );
 			this->grpSkills->PerformLayout();
 			this->groupBox4->ResumeLayout( false );
@@ -1619,6 +1681,10 @@ namespace MHWASS
 			this->grpSortFilter->ResumeLayout( false );
 			this->grpDecorations->ResumeLayout( false );
 			this->cmsSkills->ResumeLayout( false );
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots1 ) )->EndInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots2 ) )->EndInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudWeaponSlots3 ) )->EndInit();
+			( cli::safe_cast<System::ComponentModel::ISupportInitialize^>( this->nudHR ) )->EndInit();
 			this->ResumeLayout( false );
 			this->PerformLayout();
 
@@ -1651,6 +1717,11 @@ private:
 		query->my_decos = cmbDecorationSelect->SelectedIndex == 1;
 		
 		query->skills.AddRange( skills );
+		query->total_skill_points_required = 0;
+		for each( Skill^ skill in skills )
+		{
+			query->total_skill_points_required += skill->level;
+		}
 
 		data->GetRelevantData( query );
 	}
@@ -1676,6 +1747,12 @@ private:
 			for each( ComboBox^ cb in SkillFilters )
 				cmbSkillFilter_SelectedIndexChanged( cb, nullptr );
 		}
+	}
+
+	System::Void EventArmorMenuClosing( System::Object^ sender, ToolStripDropDownClosingEventArgs^ e )
+	{
+		if( e->CloseReason == ToolStripDropDownCloseReason::ItemClicked )
+			e->Cancel = true;
 	}
 
 	System::Void MaxResultsTextBoxKeyPress( System::Object^ sender, KeyPressEventArgs^ e )
@@ -1827,13 +1904,34 @@ private:
 
 		for( int p = 0; p < int( Armor::ArmorType::NumArmorTypes ); ++p )
 		{
+/*#ifdef _DEBUG
+			List_t< String^ > old, nnu;
+			for each( Armor^ a in query->rel_armor[ p ] )
+				old.Add( a->name );
+#endif*/
+
 			query->rel_armor[ p ]->Clear();
 			List_t< Armor^ >^ ilist = query->inf_armor[ p ];
+			query->inf_armor[ p ] = gcnew List_t< Armor^ >();
+			/*for( int i = 0; i < ilist->Count; ++i )
+			{
+				if( !ilist[ i ]->force_disable )
+					AddToList( query->rel_armor[ p ], ilist[ i ], %query->rel_abilities, query->inf_armor[ p ], false );
+			}*/
+
+			data->GetRelevantArmors( query, query->rel_armor[ p ], Armor::static_armors[ p ], query->inf_armor[ p ], true );
+
+/*#ifdef _DEBUG
+			for each( Armor^ a in query->rel_armor[ p ] )
+				nnu.Add( a->name );
+
 			for( int i = 0; i < ilist->Count; ++i )
 			{
-				if( advanced_search.boxes[ p ]->Items[ i ]->Checked )
-					query->rel_armor[ p ]->Add( ilist[ i ] );
+				const bool checked = advanced_search.boxes[ p ]->Items[ i ]->Checked;
+				const bool used = Utility::Contains( query->rel_armor[ p ], ilist[ i ] ) || Utility::Contains( query->inf_armor[ p ], ilist[ i ] );
+				Assert( checked == used, L"Advanced search armor usage not as expected" );
 			}
+#endif*/
 		}
 		query->rel_charms.Clear();
 		
@@ -2018,12 +2116,16 @@ private:
 
 		System::Text::StringBuilder sb( solutions->Count * 1024 );
 
-		if( last_result ) sb.Append( last_result );
+		if( last_result )
+			sb.Append( last_result );
 		
 		System::String^ dash = L"-----------------";
 		int count = 0;
 		for each( Solution^ solution in solutions )
 		{
+			if( solution->HasDLCDisabledArmor() )
+				continue;
+
 			if( ++count > MAX_LIMIT )
 				break;
 
@@ -2035,7 +2137,7 @@ private:
 				if( armor )
 				{
 					sb.Append( armor->name );
-					if( armor->no_relevant_skills )
+					if( armor->total_relevant_skill_points == 0 )
 					{
 						//sb.Append( StaticString( JustForTheSlots ) );
 					}
@@ -2110,6 +2212,15 @@ private:
 					}
 				}
 			}
+			if( cmbFilterByExtraSkill->SelectedIndex > 0 && cmbFilterByExtraSkill->SelectedIndex - 1 < solutions_extra_skills.Count )
+			{
+				Skill^ selected_extra_skill = solutions_extra_skills[ cmbFilterByExtraSkill->SelectedIndex - 1 ]->skill;
+				if( !Utility::Contains( %solution->extra_skills, selected_extra_skill ) && Utility::Contains( %solution->potential_extra_skills, selected_extra_skill ) )
+				{
+					sb.AppendLine( FormatString1( SkillPossible, selected_extra_skill->name ) );
+					offset++;
+				}
+			}
 
 			if( mnuPrintMaterials->Checked )
 			{
@@ -2146,7 +2257,7 @@ private:
 			final_solutions.AddRange( solutions );
 
 		System::Text::StringBuilder sb2;
-		sb2.Append( StartString( SolutionsFound ) )->AppendLine( Convert::ToString( final_solutions.Count ) );
+		sb2.Append( StartString( SolutionsFound ) )->AppendLine( Convert::ToString( count ) );
 
 		if( solutions->Count > MAX_LIMIT )
 		{
@@ -2171,28 +2282,37 @@ private:
 
 #pragma region Worker Thread Stuff
 
+	System::Void AddSolution( Solution^ sol )
+	{
+		const auto hash = sol->GetHash();
+		if( !solution_hashes.ContainsKey( hash ) )
+		{
+			solution_hashes.Add( hash, 0 );
+			all_solutions.Add( sol );
+		}
+
+		for each( Solution^ swap in sol->armor_swaps )
+		{
+			AddSolution( swap );
+		}
+	}
+
 	System::Void AddSolutions( List_t< Solution^ >^ solutions )
 	{
-		charm_map_mutex->WaitOne();
+		all_solutions_mutex->WaitOne();
 		for each( Solution^ sol in solutions )
 		{
 			if( all_solutions.Count >= MaxSolutions )
 			{
-				charm_map_mutex->ReleaseMutex();
+				all_solutions_mutex->ReleaseMutex();
 				search_cancelled = true;
 				for each( BackgroundWorker^ worker in workers )
 					worker->CancelAsync();
 				return;
 			}
-
-			const auto hash = sol->GetHash();
-			if( !solution_hashes.ContainsKey( hash ) )
-			{
-				solution_hashes.Add( hash, 0 );
-				all_solutions.Add( sol );
-			}
+			else AddSolution( sol );
 		}
-		charm_map_mutex->ReleaseMutex();
+		all_solutions_mutex->ReleaseMutex();
 	}
 
 	System::Void cmbFilterByExtraSkill_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e)
@@ -2233,6 +2353,17 @@ private:
 					if( ExtraSkillFilters::filter_rules.ContainsKey( sk->ability ) && !ExtraSkillFilters::filter_rules[ sk->ability ]->IsRelevant() )
 						continue;
 					
+					solutions_extra_skills.Add( gcnew ExtraSkill( sk, true ) );
+					sk->extra = true;
+				}
+			}
+			for each( Skill^ sk in sol->potential_extra_skills )
+			{
+				if( !sk->ability->set_ability && !sk->extra )
+				{
+					if( ExtraSkillFilters::filter_rules.ContainsKey( sk->ability ) && !ExtraSkillFilters::filter_rules[ sk->ability ]->IsRelevant() )
+						continue;
+
 					solutions_extra_skills.Add( gcnew ExtraSkill( sk, true ) );
 					sk->extra = true;
 				}
@@ -2342,7 +2473,7 @@ private:
 
 		try
 		{
-			if( job->MatchesQuery( query ) )
+			if( job->MatchesQuery( query, true ) )
 				return job;
 		}
 		catch( Exception^ e )
@@ -2577,6 +2708,8 @@ private:
 		}
 
 		can_save = true;
+		UpdateImpossibleSkills();
+		UpdateResultString();
 		SaveConfig();
 	}
 
@@ -2599,6 +2732,8 @@ private:
 			else
 				mnuToggleAllDLC->Text = StaticString( EnableAll );
 
+			UpdateImpossibleSkills();
+			UpdateResultString();
 			SaveConfig();
 		}
 	}
@@ -2680,9 +2815,9 @@ private:
 		grpSkills->Text = StaticString( Skills );
 		grpSkillFilters->Text = StaticString( SkillFilters );
 		grpGender->Text = StaticString( Gender );
-		btnDecorations->Text = StaticString( MyDecorations );
+		btnDecorations->Text = StaticString( MyDecorationsButton );
 		btnSearch->Text = StaticString( QuickSearch );
-		btnAdvancedSearch->Text = StaticString( AdvancedSearch );
+		btnAdvancedSearch->Text = StaticString( AdvancedSearchButton );
 		btnCancel->Text = StaticString( Cancel );
 		cmbDecorationSelect->Items[ 0 ] = StaticString( UseNoDecorations );
 		cmbDecorationSelect->Items[ 1 ] = StaticString( UseOnlyMyDecorations );
@@ -2702,6 +2837,24 @@ private:
 		cmbSort->Items[ 12 ] = StaticString( SortFamily );
 		cmbSort->Items[ 13 ] = StaticString( SortExtraSkills );
 
+		tipResults->ToolTipTitle = StaticString( Results );
+		tipResults->SetToolTip( txtSolutions, StaticString( TipResults ) );
+		tipDecorations->ToolTipTitle = StaticString( Decorations );
+		tipDecorations->SetToolTip( btnDecorations, StaticString( TipDecorations ) );
+		tipDecorations->SetToolTip( cmbDecorationSelect, StaticString( TipDecorations ) );
+		tipSortFilter->ToolTipTitle = StaticString( SortFilterResults );
+		tipSortFilter->SetToolTip( cmbFilterByExtraSkill, StaticString( TipFilter ) );
+		tipSortFilter->SetToolTip( cmbSort, StaticString( TipSort ) );
+		tipQuestLevel->ToolTipTitle = StaticString( HR );
+		tipQuestLevel->SetToolTip( nudHR, StaticString( TipQuestLevel ) );
+		tipWeaponSlots->ToolTipTitle = StaticString( WeaponSlots );
+		tipWeaponSlots->SetToolTip( nudWeaponSlots1, FormatString1( TipWeaponSlotLevel, L"1" ) );
+		tipWeaponSlots->SetToolTip( nudWeaponSlots2, FormatString1( TipWeaponSlotLevel, L"2" ) );
+		tipWeaponSlots->SetToolTip( nudWeaponSlots3, FormatString1( TipWeaponSlotLevel, L"3" ) );
+		tipSkills->ToolTipTitle = StaticString( Skills );
+		tipSkills->SetToolTip( lblRemoveSkills, StaticString( TipRemoveSkills ) );
+		tipSkills->SetToolTip( lblAddSkills, StaticString( TipAddSkills ) );
+
 		for( int i = 0; i < NumSkills; ++i )
 		{
 			Skills[ i ]->BeginUpdate();
@@ -2712,6 +2865,10 @@ private:
 		lblAddSkills->Location = Point( TextRenderer::MeasureText( grpSkills->Text, grpSkills->Font ).Width + 2, lblAddSkills->Location.Y );
 		lblRemoveSkills->Location = Point( lblAddSkills->Location.X + lblAddSkills->Width - 5, lblRemoveSkills->Location.Y );
 		
+		nudWeaponSlots1->UpdateEditText();
+		nudWeaponSlots2->UpdateEditText();
+		nudWeaponSlots3->UpdateEditText();
+
 		UpdateResultString();
 		UpdateExtraSkillCombo( true );
 
@@ -2924,7 +3081,7 @@ private:
 			ExtraSkill^ selected = solutions_extra_skills[ cmbFilterByExtraSkill->SelectedIndex - 1 ];
 			for each( Solution^ s in all_solutions )
 			{
-				if( selected->want && Utility::Contains( %s->extra_skills, selected->skill ) ||
+				if( selected->want && ( Utility::Contains( %s->extra_skills, selected->skill ) || Utility::Contains( %s->potential_extra_skills, selected->skill ) ) ||
 					!selected->want && !Utility::Contains( %s->extra_skills, selected->skill->ability ) )
 					final_solutions.Add( s );
 			}
@@ -3096,9 +3253,38 @@ private:
 		SaveConfig();
 	}
 
+	System::Void nudWeaponSlots1_ValueChanged( System::Object^  sender, System::EventArgs^  e )
+	{
+		if( (int)nudWeaponSlots1->Value == 0 )
+		{
+			nudWeaponSlots2->Enabled = false;
+			nudWeaponSlots3->Enabled = false;
+			nudWeaponSlots2->Value = 0;
+			nudWeaponSlots3->Value = 0;
+		}
+		else
+		{
+			nudWeaponSlots2->Enabled = true;
+		}
+	}
+
+	System::Void nudWeaponSlots2_ValueChanged( System::Object^  sender, System::EventArgs^  e )
+	{
+		if( (int)nudWeaponSlots2->Value == 0 )
+		{
+			nudWeaponSlots3->Enabled = false;
+			nudWeaponSlots3->Value = 0;
+		}
+		else
+		{
+			nudWeaponSlots3->Enabled = true;
+		}
+	}
+
 	System::Void exitToolStripMenuItem_Click( System::Object^ sender, System::EventArgs^ e )
 	{
 		this->Close();
 	}
+
 };
 }

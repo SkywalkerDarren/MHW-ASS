@@ -175,5 +175,8 @@ Schmetterling-Brachia α
 Schmetterling-Brachia β
 Königinnenkäfer-Brachia α
 Königinnenkäfer-Brachia β
-Gala Suit Cuffs
-Gala Suit Cuffs α
+Galaanzug-Manschetten
+Galaanzug-Manschetten α
+Geralt-Arme α
+Ciri-Arme α
+Nergigante-Armschienen γ

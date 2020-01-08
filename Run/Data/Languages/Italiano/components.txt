@@ -4,6 +4,9 @@ Seme della difesa
 Advanced Armor Sphere
 Frammento di eterite
 Osso Antico
+Osso maledetto antico
+Leshen: artiglio antico
+Leshen: teschio antico
 Pillola Antica
 Anjanath: zanna
 Anjanath: zanna+
@@ -18,7 +21,7 @@ Anjanath: scaglia+
 Anjanath: coda
 Antidoto
 Erba antidoto
-Appreciation Ticket
+Buono di ringraziamento
 Sacca acquatica
 Minerale aqualux
 Sfera-armatura I
@@ -92,6 +95,7 @@ Encomio
 Cool Drink
 Osso corallino
 Cristallo corallino
+Osso maledetto
 Daora: carapace
 Daora: artiglio+
 Daora: scaglia+
@@ -292,6 +296,9 @@ Legiana: scaglia+
 Legiana: membrana caudale
 Legiana: membrana
 Legiana: ala
+Leshen: artiglio
+Leshen: resina
+Leshen: teschio
 Lifepowder
 Cristallo luce
 Loc Lac Ore
@@ -335,6 +342,7 @@ Nergigante: corno+
 Nergigante: piastra rigenerata
 Nergigante: coda
 Nergigante: sperone
+Buono Nergigante
 Net
 Nitroshroom
 Trofeo Audace Nora

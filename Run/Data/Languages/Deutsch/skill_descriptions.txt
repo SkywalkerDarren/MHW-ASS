@@ -333,6 +333,7 @@ Verbessert das Ältestensiegel um eine Stufe.
 Erhöhte Chance auf zusätzliche Questbelohnungen. (Keine Auswirkung, wenn du der Quest später beitrittst.)
 Ermöglicht dir, einen Kadaver einmal zusätzlich zu zerlegen. (Keine Auswirkung, wenn du der Quest später beitrittst.)
 Erhöht den Element-Schaden durch gesprungene Angriffe.
+Nur wer das harte Hexer-Training absolviert hat, darf die Magie des mächtigen Igni-Zeichens einsetzen.
 Setbonus verleiht <<Adrenalin>>.
 Setbonus verleiht <<Glück>>.
 Setbonus verleiht <<Bestrafender Zug>>.
@@ -365,3 +366,6 @@ Setbonus verleiht <<Ausdauerlimit hoch>>.
 Setbonus verleiht <<Inneres Auge/Ballistik>>.
 Setbonus verleiht <<Element-Luftherrschaft>>.
 Setbonus verleiht <<Meisterschliff>>.
+Setbonus verleiht <<Glückserhöher>>.
+Setbonus verleiht <<Igni Intensität>>.
+Setbonus verleiht <<Super-Erholung>>.

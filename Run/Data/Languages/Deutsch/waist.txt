@@ -175,5 +175,8 @@ Schmetterling-Elytra α
 Schmetterling-Elytra β
 Königinnenkäfer-Elytra α
 Königinnenkäfer-Elytra β
-Gala Suit Tail
-Gala Suit Tail α
+Galaanzug-Frack
+Galaanzug-Frack α
+Geralt-Hüfte α
+Ciri-Hüfte α
+Nergigante-Hüftring γ

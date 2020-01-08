@@ -326,14 +326,8 @@ void Armor::LoadDLC( System::String^ filename )
 				{
 					for each( Armor^ armor in armor_type )
 					{
-						for each( MaterialComponent^ mc in armor->components )
-						{
-							if( mc->material == mat )
-							{
-								dlc->armors.Add( armor );
-								break;
-							}
-						}
+						if( armor->components.Count > 0 && armor->components[ 0 ]->material == mat )
+							dlc->armors.Add( armor );
 					}
 				}
 			}
@@ -342,8 +336,20 @@ void Armor::LoadDLC( System::String^ filename )
 				Assert( false, L"Could not find DLC armor " + name );
 			}
 		}
+		
 		Armor::static_dlc.Add( dlc );
 	}
+
+	/*IO::StreamWriter fout( L"dlc_dump.txt" );
+	for each( ArmorDLC^ dlc in Armor::static_dlc )
+	{
+		fout.Write( dlc->name );
+		for each ( Armor^ armor in dlc->armors )
+		{
+			fout.Write( L"," + armor->name );
+		}
+		fout.WriteLine();
+	}*/
 }
 
 void Armor::LoadLanguageDLC( System::String^ filename )
@@ -383,29 +389,33 @@ unsigned GetTier( const unsigned hr )
 	return hr > 5 ? 1 : 0;
 }
 
-bool Armor::MatchesQuery( Query^ query, const bool allow_full )
+bool Armor::MeetsRequirements( Query^ query, const bool allow_full )
 {
-	//check requirements
 	if( !query->include_arena && this->arena ||
 		!query->allow_lower_tier && GetTier( this ) < GetTier( query->hr ) ||
 		gender != Gender::BOTH_GENDERS && gender != query->gender ||
-		this->dlc_disabled || 
+		this->dlc_disabled ||
 		!allow_full && this->full_set ||
 		query->hr < this->hr )
 		return false;
 
+	return true;
+}
+
+bool Armor::MatchesQuery( Query^ query, const bool allow_full )
+{
+	if( !MeetsRequirements( query, allow_full ) )
+		return false;
+
 	//check for relevant skills
-	no_relevant_skills = true;
-	for( int i = 0; i < abilities.Count; ++i )
+	total_relevant_skill_points = 0;
+	for each( AbilityPair^ ap in abilities )
 	{
-		if( Utility::Contains( %query->rel_abilities, abilities[ i ]->ability ) )
-		{
-			no_relevant_skills = false;
-			return true;
-		}
+		if( ap->ability->relevant )
+			total_relevant_skill_points += ap->amount;
 	}
 	
-	return true;
+	return total_relevant_skill_points > 0 || total_slots > 0;
 }
 
 bool Armor::IsBetterAtNonSkills( Armor^ other )
@@ -429,7 +439,7 @@ bool Armor::IsBetterThan( Armor^ other, List_t< Ability^ >^ rel_abilities )
 		this->highest_slot_level > other->highest_slot_level ||
 		this->total_slot_level > other->total_slot_level ||
 		this->slot_product > other->slot_product ||
-		this->total_slots >= other->total_slots && highest_slot_level >= other->highest_slot_level && total_slot_level >= other->total_slot_level && slot_product >= other->slot_product && !no_relevant_skills && other->no_relevant_skills )
+		this->total_slots >= other->total_slots && highest_slot_level >= other->highest_slot_level && total_slot_level >= other->total_slot_level && slot_product >= other->slot_product && total_relevant_skill_points > 0 && other->total_relevant_skill_points == 0 )
 		return true;
 
 	if( SpecificAbility::nonelemental_boost->relevant && other->has_free_element )
@@ -437,7 +447,7 @@ bool Armor::IsBetterThan( Armor^ other, List_t< Ability^ >^ rel_abilities )
 
 	bool somewhat_worse = total_slots < other->total_slots || highest_slot_level < other->highest_slot_level || total_slot_level < other->total_slot_level || slot_product < other->slot_product;
 	
-	if( !somewhat_worse && this->no_relevant_skills && other->no_relevant_skills )
+	if( !somewhat_worse && this->total_relevant_skill_points == 0 && other->total_relevant_skill_points == 0 )
 	{
 		return this->IsBetterAtNonSkills( other );
 	}
@@ -459,6 +469,43 @@ bool Armor::IsBetterThan( Armor^ other, List_t< Ability^ >^ rel_abilities )
 	}
 
 	return total_relevant_points > other_total_relevant_points || ( !somewhat_worse && this->IsBetterAtNonSkills( other ) );
+}
+
+bool Armor::IsStrictlyBetterThan( Armor^ other )
+{
+	if( this->full_set || other->full_set )
+		return false;
+
+	if( this->total_slots < other->total_slots ||
+		this->highest_slot_level < other->highest_slot_level ||
+		this->total_slot_level < other->total_slot_level ||
+		this->slot_product < other->slot_product )
+		return false;
+
+	if( SpecificAbility::nonelemental_boost->relevant && this->has_free_element && !other->has_free_element )
+		return false;
+
+	int total_relevant_points = 0, other_total_relevant_points = 0;
+
+	for each( AbilityPair^ ap in abilities )
+	{
+		int my_skill_at = this->GetSkillAt( ap->ability );
+		int other_skill_at = other->GetSkillAt( ap->ability );
+
+		if( my_skill_at < other_skill_at )
+			return false;
+	}
+
+	for each( AbilityPair^ ap in other->abilities )
+	{
+		int my_skill_at = this->GetSkillAt( ap->ability );
+		int other_skill_at = other->GetSkillAt( ap->ability );
+
+		if( my_skill_at < other_skill_at )
+			return false;
+	}
+
+	return true;
 }
 
 unsigned Armor::GetSkillAt( Ability^ ability )

@@ -134,6 +134,7 @@ Sceau des anciens +
 Bonne fortune
 Maître dépeceur
 Châtiment des cieux
+Intensité d'Igni
 Pouvoir de l'Anjanath
 Bénédiction du Legiana
 Pouvoir de l'Odogaron
@@ -159,4 +160,5 @@ Guidance de la Guilde
 Guidance de la Commission
 Grâce de la Lunastra
 Âme du chevalier dragon
-Astera Blessing
+Bénédiction d'Astera
+Savoir du sorceleur

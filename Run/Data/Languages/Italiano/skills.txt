@@ -134,6 +134,7 @@ Bonus sigillo anziano
 Gran fortuna
 Maestro del ricavo
 Minaccia aerea elementale
+Intensità Igni
 Forza dell'Anjanath
 Benedizione del Legiana
 Forza dell'Odogaron
@@ -159,4 +160,5 @@ Assistenza della Gilda
 Assistenza della Commissione
 Auspicio della Lunastra
 Anima di Dragoon
-Astera Blessing
+Benedizione di Astera
+Sapienza del witcher

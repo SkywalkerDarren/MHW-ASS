@@ -4,6 +4,9 @@ Diamantsamen
 Rüstkugel III
 Ätheryten-Splitter
 Alter Knochen
+Uralter Verfluchter Knochen
+Uralter-Waldschrat-Klaue
+Uralter-Waldschrat-Schädel
 Uralter Trank
 Anjanath-Reißzahn
 Anjanath-Reißzahn+
@@ -18,7 +21,7 @@ Anjanath-Schuppe+
 Anjanath-Schwanz
 Gegengift
 Gegengiftkraut
-Appreciation Ticket
+Dankbarkeit-Ticket
 Aqua-Beutel
 Wasserkern-Erz
 Rüstkugel I
@@ -92,6 +95,7 @@ Belobigung
 Kaltgetränk
 Korallenknochen
 Korallenkristall
+Verfluchter Knochen
 Daora-Rückenpanzer
 Daora-Klaue+
 Daora-Drachenschuppe+
@@ -292,6 +296,9 @@ Legiana-Schuppe+
 Legiana-Schwanzgewebe
 Legiana-Gewebe
 Legiana-Flügel
+Waldschrat-Klaue
+Waldschrat-Harz
+Waldschrat-Schädel
 Lebenspulver
 Lichtkristall
 Loc-Lac-Erz
@@ -335,6 +342,7 @@ Nergigante-Horn+
 Nergigante-Nachwachsplatte
 Nergigante-Schwanz
 Nergigante-Kralle
+Nergigante-Ticket
 Netz
 Nitropilz
 Nora-Kriegertrophäe

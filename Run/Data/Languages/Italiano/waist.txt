@@ -43,8 +43,8 @@ Spira in lega α
 Spira in lega β
 Elitre dello scarabeo α
 Elitre dello scarabeo β
-Cappotto floreale α
-Cappotto floreale β
+Elitre di farfalla α
+Elitre di farfalla β
 Spira di Vespoid α
 Spira di Vespoid β
 Spira di Hornetaur α
@@ -175,5 +175,8 @@ Elitre di farfalla α
 Elitre di farfalla β
 Elitre dello scarabeo α
 Elitre dello scarabeo β
-Gala Suit Tail
-Gala Suit Tail α
+Coda gran galà
+Coda gran galà α
+Vita di Geralt α
+Vita di Ciri α
+Spira di Nergigante γ

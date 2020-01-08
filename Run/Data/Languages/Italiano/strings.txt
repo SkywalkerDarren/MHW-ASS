@@ -12,7 +12,7 @@
 #  If you have any questions or require more strings/options/UI changes, please message AthenaADP on Facebook or reddit.
 #
 
-#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen means nothing is shown.
+#The first line is for translator credit. This appears in the About dialog when this language is selected. A single hyphen (-) means nothing is shown.
 Tradotto da Kibido
 
 #Menu options
@@ -51,15 +51,19 @@ Disabilita Tutto
 
 &Donazioni
 &Descrizioni Abilità
+Descrizioni Abilità
 
 #This option opens a browser to my Facebook page
 &Ricerca Aggiornamenti
 
 &Informazioni
-&I Miei Gioielli
+Informazioni
+&I Miei Gioielli...
+I Miei Gioielli
 &Importa
 &Ricerca Rapida
-&Ricerca Avanzata
+&Ricerca Avanzata...
+Ricerca Avanzata
 &Annulla
 &Predefinito
 
@@ -197,3 +201,16 @@ Escludi %1
 
 #Used in the "My Decorations" dialog to show skills/decorations that are "maxed out" i.e. you have enough decorations to get max level with the skill
 Completato
+
+#Prefix for slot levels
+LV
+
+#Tooltips
+Click-destro su armature o abilità per maggiori informazioni
+Seleziona con quali decorazioni cercare
+Seleziona un'ulteriore abilità per escludere i risultati in cui non è presente
+Seleziona con che criterio organizzare i risultati
+Seleziona a che livello di missioni hai accesso
+Seleziona il livello dello slot arma %1
+Meno abilità
+Più abilità
